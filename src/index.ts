@@ -1,5 +1,7 @@
 // O que é o typescript? Linguagem basada no JS mas add tipagem estática opcional
 
+import { callbackify } from "util";
+
 //ts
 // 💡 Tipagem Estática Opcional (TypeScript)
 //
@@ -25,7 +27,7 @@ console.log("Nome: " + nome + " Idade: " + idade)
 
 const myString: string =  "Gabriel"
 const myNumber: number =  15
-const myBoolean: boolean =  false
+let  name: string
 
 function soma(a: number, b: number){
     return a + b
@@ -42,3 +44,78 @@ function greet(name: string, age?:number){ //parâmetro opcional precisa SEMPRE 
 console.log(soma(myNumber, myNumber))
 console.log(greet(myString))
 console.log(greet(myString, myNumber))
+
+
+interface Wallet{
+    coins?: number,
+    credits?: number,
+}
+
+interface User{
+    name: string,
+    createdAt: Date,
+    wallet: Wallet
+}
+
+interface Admin extends User{
+    ban(user: User):void
+}
+
+function createUser(username: string): User{
+    return{
+        name: username,
+        createdAt: new Date(),
+        wallet: {coins: 0, credits: 0}
+    }
+}
+
+function createAdmin(user:User):Admin{
+    return{
+        ...user,
+        ban(user) {
+            console.log("O usuário "+user.name+" foi banido! Carteira: "+ user.wallet.coins+" "+user.wallet.credits)
+        },
+    }
+}
+
+const Gabriel = createUser("gabriel")
+const Lucas = createUser("Lucas")
+const admin = createAdmin(Gabriel)
+function updateWallet(user: User, wallet: Wallet){
+    user.wallet = {...user.wallet, ...wallet}
+}
+updateWallet(Gabriel, {coins:15, credits:15})
+console.log(Gabriel)
+admin.ban(Lucas)
+
+//TYPES
+type nameList = string[]
+type Animal = {
+    weight: number,
+    birth: string
+}
+
+function createAnimal(weighthh: number, birth:string): Animal{
+    return{weight: weighthh, birth:birth}
+}
+let cow = createAnimal(50, "20/05/2007")
+console.log(cow)
+
+//TUPLAS
+type calendarDate = [day: number, month: number, year: number]
+const date: calendarDate = [10,11,2025]
+
+//ENUMS
+enum Players{
+    "Cristiano Ronaldo" = 1,
+    "Lionel Messi",
+    "Pelé",
+    "Luciano"
+}
+type Team = [club: string, year: string, goat: Players]
+const newTeam: Team = [
+    "Aoba EC",
+    "20/05/2007",
+    Players["Lionel Messi"]
+]
+console.log(newTeam)
